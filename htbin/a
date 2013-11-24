@@ -1,0 +1,36 @@
+#!/bin/sh
+
+cat header
+#set
+
+OUT=".out"
+ERR=".err"
+SEQID=".seq"
+
+SEQ=$(($(cat "$SEQID")+1))
+
+cat <<EOF
+<a href="?$((SEQ))">run</a>
+<pre>
+EOF
+
+date "+%Y-%m-%d %T"
+
+if lsof "$OUT" >/dev/null || lsof "$ERR" >/dev/null; then
+    echo busying...
+elif test "$QUERY_STRING" = $SEQ; then
+    echo running...
+    echo $SEQ >"$SEQID"
+    ./a.sh >"$OUT" 2>"$ERR" &
+else
+    stat -c %y "$SEQID"
+fi
+
+echo "<hr />"
+stat -c %y "$OUT"
+cat "$OUT"
+
+echo "<hr />"
+stat -c %y "$ERR"
+cat "$ERR"
+

@@ -1,0 +1,4 @@
+#!/bin/sh
+echo "Content-Type: image/png
+"
+cat foobar.png
